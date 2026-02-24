@@ -4,8 +4,6 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 # Create your views here.
 
-def index(request):
-    return HttpResponse('Hello World! This came from the index view')
 
 class ProjectListView(ListView):
     model = Project

@@ -1,12 +1,11 @@
 from django.urls import path
 
-from .views import index
+from .views import ProjectListView, ProjectDetailView
 
 urlpatterns = [
-    path('', index, name='index'),
-    # TODO: Create urlpatterns for list and detail view
+    path('projects/', ProjectListView.as_view(), name='project_list'),
+    path('project/<int:project_number>', ProjectDetailView.as_view(), name='project_detail'),
 ]
-
 
 
 app_name = "diyprojects"
