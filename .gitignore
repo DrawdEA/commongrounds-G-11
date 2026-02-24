@@ -2,6 +2,7 @@ db.sqlite3
 .env
 *.pyc
 *.log
+.DS_store
 
 __pycache__/
 env/
