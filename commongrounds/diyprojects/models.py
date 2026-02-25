@@ -42,7 +42,7 @@ class Project(models.Model):
         return self.steps.split("|")
     
     class Meta:
-        ordering = ['created_on']
+        ordering = ['-created_on']
         verbose_name = 'project'
         verbose_name_plural = 'projects'
     
