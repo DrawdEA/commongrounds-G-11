@@ -24,9 +24,10 @@ class Project(models.Model):
     description = models.TextField()
     materials = models.TextField()
     steps = models.TextField()
-    created_on = models.DateTimeField(null=False)
-    updated_on = models.DateTimeField(null=False)
-    category = models.ForeignKey(ProjectCategory, on_delete=models.SET_NULL, related_name='projects')
+    # Reference for auto_now and auto_now_add: https://docs.djangoproject.com/en/6.0/ref/models/fields/
+    created_on = models.DateTimeField(null=False, auto_now_add=True)
+    updated_on = models.DateTimeField(null=False, auto_now=True)
+    category = models.ForeignKey(ProjectCategory, on_delete=models.SET_NULL, related_name='projects', null=True)
 
     def __str__(self):
         return '{} under {}'.format(self.title, self.category.name)
