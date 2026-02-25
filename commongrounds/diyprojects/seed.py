@@ -1,3 +1,5 @@
+from .models import Project, ProjectCategory
+
 context = {
         "categories": [
             {
@@ -46,3 +48,24 @@ context = {
             }
         ]
     }
+
+def fill_db():
+    for category in context["categories"]:
+        new_category = ProjectCategory()
+        new_category.name = category["name"]
+        new_category.description = category["description"]
+        new_category.save()
+
+        for project in category["projects"]:
+            new_project = Project()
+            new_project.title = project["title"]
+            new_project.description = project["description"]
+
+            new_project.materials = ("|").join(project["materials"])
+            new_project.steps = ("|").join(project["steps"])
+            new_project.category = new_category
+
+            new_project.save()
+
+    print(ProjectCategory.objects.all())    
+    print(Project.objects.all())
