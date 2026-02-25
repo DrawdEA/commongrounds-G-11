@@ -1,15 +1,23 @@
 {% extends 'diyprojects/base_diyprojects.html' %}
 {% load static %}
     {% block content %}
-    <h1>{{project.category.name}}</h1>
-    <h2>{{project.title}}</h2>
-    <h3>Created on {{project.created_on}}</h3>
-    <h3>Updated on {{project.updated_on}}</h3>
+    <h2>{{project.category.name}}</h2>
+    <h3>{{project.title}}</h3>
+    <p>Created on {{project.created_on}}</p>
+    <p>Updated on {{project.updated_on}}</p>
     <h4>Description</h4>
     <p>{{project.description}}</p>
     {# TODO: Convert this to proper list #}
     <h4>Materials</h4>
-    <p>{{project.materials}}</p>
+    <ul>
+        {% for material in project.splitMaterials %}
+            <li>{{material}}</li>
+        {% endfor %}
+    </ul>
     <h4>Steps</h4>
-    <p>{{project.steps}}</p>
+    <ol>
+        {% for step in project.splitSteps %}
+            <li>{{step}}</li>
+        {% endfor %}
+    </ol>
 {% endblock %}

@@ -35,6 +35,12 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse('diyprojects:project_detail', args=[str(self.pk)])
     
+    def splitMaterials(self):
+        return self.materials.split("|")
+    
+    def splitSteps(self):
+        return self.steps.split("|")
+    
     class Meta:
         ordering = ['created_on']
         verbose_name = 'project'
