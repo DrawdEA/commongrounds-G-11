@@ -9,7 +9,7 @@
             <li>
                 <a href="{% url 'merchstore:product_detail' product.pk %}">{{ product.name }}</a>
                 {% if product.product_type %}({{ product.product_type.name }}){% endif %}
-                — {{ product.price }}
+                — ₱{{ product.price }}
             </li>
         {% empty %}
             <li>No products yet.</li>

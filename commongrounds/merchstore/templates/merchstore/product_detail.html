@@ -7,7 +7,7 @@
     {% if object.product_type %}
         <p><strong>Type:</strong> {{ object.product_type.name }}</p>
     {% endif %}
-    <p><strong>Price:</strong> {{ object.price }}</p>
+    <p><strong>Price:</strong> ₱{{ object.price }}</p>
     <p><strong>Description:</strong></p>
     <p>{{ object.description }}</p>
     <p><a href="{% url 'merchstore:product_list' %}">Back to list</a></p>
