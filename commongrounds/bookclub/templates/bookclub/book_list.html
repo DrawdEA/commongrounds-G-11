@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Book Club Directory</h1>
+    
+    {% if books %}
+        <ul>
+        {% for book in books %}
+            <li class="book-item">
+                <a href="{% url 'bookclub:book_detail' book.pk %}">{{ book.title }}</a> 
+                by {{ book.author }} ({{ book.publication_year }})
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No books have been added to the club yet!</p>
+    {% endif %}
+{% endblock %}
