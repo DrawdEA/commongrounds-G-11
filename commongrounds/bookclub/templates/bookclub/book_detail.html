@@ -2,11 +2,10 @@
 
 {% block content %}
     <h1>{{ book.title }}</h1>
-    <hr>
+
+    <p><strong>Author:</strong> {{ book.author }}</p>
     
-    <p>Author: {{ book.author }}</p>
-    
-    <p>Genre: 
+    <p><strong>Genre: </strong>
         {% if book.genre %}
             {{ book.genre.name }}
         {% else %}
@@ -14,9 +13,9 @@
         {% endif %}
     </p>
     
-    <p>Publication Year: {{ book.publication_year }}</p>
+    <p><strong>Year:</strong> {{ book.publication_year }}</p>
     
-    <p>Added to Club On: {{ book.created_on|date}}</p>
+    <p><strong>Added to Club On:</strong> {{ book.created_on|date}}</p>
 
     <a href="{% url 'bookclub:book_list' %}" class="back-link">Back to Book List</a>
 {% endblock %}
