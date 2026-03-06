@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ book.title }}</h1>
+
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    
+    <p><strong>Genre: </strong>
+        {% if book.genre %}
+            {{ book.genre.name }}
+        {% else %}
+            Uncategorized
+        {% endif %}
+    </p>
+    
+    <p><strong>Year:</strong> {{ book.publication_year }}</p>
+    
+    <p><strong>Added to Club On:</strong> {{ book.created_on|date}}</p>
+
+    <a href="{% url 'bookclub:book_list' %}" class="back-link">Back to Book List</a>
+{% endblock %}
