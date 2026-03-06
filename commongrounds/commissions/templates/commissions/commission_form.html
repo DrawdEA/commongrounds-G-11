@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Commission</title>
+</head>
+<body>
+    <h1>Create Commission</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+
+    <p><a href="{% url 'commissions:commission_list' %}">Back to list</a></p>
+</body>
+</html>

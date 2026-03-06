@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ object.title }}</title>
+</head>
+<body>
+    <h1>{{ object.title }}</h1>
+
+    {% if object.commission_type %}
+        <p><strong>Type:</strong> {{ object.commission_type.name }}</p>
+    {% endif %}
+
+    <p><strong>People required:</strong> {{ object.people_required }}</p>
+    <p><strong>Created on:</strong> {{ object.created_on }}</p>
+    <p><strong>Updated on:</strong> {{ object.updated_on }}</p>
+
+    <h3>Description</h3>
+    <p>{{ object.description }}</p>
+
+    <p><a href="{% url 'commissions:commission_list' %}">Back to list</a></p>
+</body>
+</html>
