@@ -1,0 +1,9 @@
+{% extends 'diyprojects/base_diyprojects.html' %}
+{% load static %}
+    {% block content %}
+    <ul>
+        {%for project in project_list%}
+        <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
+        {%endfor%}
+    </ul>
+{% endblock %}
