@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Genre, Book
 
+
 class GenreAdmin(admin.ModelAdmin):
     model = Genre
 
