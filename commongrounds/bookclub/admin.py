@@ -7,5 +7,5 @@ class GenreAdmin(admin.ModelAdmin):
 class BookAdmin(admin.ModelAdmin):
     model = Book
 
-admin.site.register(Genre)
-admin.site.register(Book)
+admin.site.register(Genre, GenreAdmin)
+admin.site.register(Book, BookAdmin)
