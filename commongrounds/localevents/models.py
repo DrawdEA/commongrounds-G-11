@@ -19,7 +19,7 @@ class Event(models.Model):
         EventType,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='categories',
+        related_name='events',
     )
     description = models.TextField()
     location = models.CharField(max_length=255)
