@@ -62,6 +62,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'commongrounds.urls'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -132,3 +134,13 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#https://stackoverflow.com/questions/4870619/django-after-login-redirect-user-to-his-custom-page-mysite-com-username#:~:text=3%20Comments-,Add%20a%20comment,Settings.py
+LOGIN_REDIRECT_URL = '/'
+
+# STATIC_URL = os.getenv("STATIC_ROOT")
+STATICFILES_DIRS = [BASE_DIR/'static']
+# MEDIA_URL = os.getenv('MEDIA_URL')
+MEDIA_ROOT = BASE_DIR/'media'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login'

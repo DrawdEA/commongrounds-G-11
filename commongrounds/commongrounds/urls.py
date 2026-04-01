@@ -7,13 +7,15 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 
 from django.contrib import admin
 from django.urls import include, path
+from .views import home
 
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls', namespace="accounts")),
     path('localevents/', include('localevents.urls', namespace="localevents")),
-    path('commissions/', include('commissions.urls')),
+    path('commissions/', include('commissions.urls', namespace='commissions')),
     path('diyprojects/', include('diyprojects.urls', namespace='diyprojects')),
     path('merchstore/', include('merchstore.urls', namespace='merchstore')),
     path('bookclub/', include('bookclub.urls', namespace='bookclub')),

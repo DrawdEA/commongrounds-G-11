@@ -7,6 +7,10 @@ from .models import Profile
 from .forms import ProfileUpdateForm
 
 # Create your views here.
+def index(request):
+    return HttpResponse("You are at the index of the accounts page.")
+
+
 @login_required
 def profile_update(request, username):
     # If user tries to access a different profile
