@@ -1,10 +1,21 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Project, Profile, Favorite, ProjectReview
+from .models import Project, Profile, Favorite, ProjectReview, ProjectRating
 from .forms import ProjectForm
 # Create your views here.
 
+
+def get_average_rating(project_ratings):
+    if len(project_ratings) <= 0:
+        return -1
+    
+    sum = 0
+    count = 0
+    for rating in project_ratings:
+        sum += rating
+        count += 1
+    return sum/count
 
 def project_list(request):
     projects = Project.objects.all()
@@ -31,8 +42,13 @@ def project_list(request):
 @login_required
 def project_detail(request, pk):
     project = Project.objects.get(pk=pk)
+    project_reviews = ProjectReview.objects.filter(project=project)
+    average_rating = get_average_rating(ProjectRating.objects.filter(project=project))
+
     return render(request, 'diyprojects/project_detail.html',
-                  {'project': project})
+                  {'project': project,
+                   'project_reviews':project_reviews,
+                   'average_rating': average_rating})
 
 
 @login_required
@@ -46,3 +62,7 @@ def project_add(request):
             project = form.save()
             return redirect('project_detail', pk=project.pk)
     return render(request, 'diyprojects/project_add.html', {"form": form})
+
+@login_required
+def project_edit(request):
+    pass

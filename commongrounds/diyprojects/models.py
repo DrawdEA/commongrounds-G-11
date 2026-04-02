@@ -46,6 +46,7 @@ class Project(models.Model):
 
     def split_steps(self):
         return self.steps.split("|")
+    
 
     class Meta:
         ordering = ['-created_on']
