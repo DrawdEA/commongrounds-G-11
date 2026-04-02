@@ -115,12 +115,7 @@ def project_edit(request, pk):
     if project.creator != request.user.profile:
         return redirect('diyprojects:project_detail', pk=pk)
     
-    form = ProjectForm(initial={'title': project.title,
-                                'description': project.description,
-                                'materials': project.materials,
-                                'steps': project.steps,
-                                'category': project.category,
-                                'creator': request.user.profile.display_name})
+    form = ProjectForm(instance=project, initial={'creator': request.user.profile.display_name})
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
