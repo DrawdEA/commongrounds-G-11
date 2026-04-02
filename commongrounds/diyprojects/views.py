@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Project, Profile, Favorite, ProjectReview, ProjectRating
-from .forms import ProjectForm
+from .forms import ProjectForm, ProjectReviewForm
 # Create your views here.
 
 
@@ -41,14 +41,27 @@ def project_list(request):
 
 @login_required
 def project_detail(request, pk):
+    # Basic Preliminary Logic
     project = Project.objects.get(pk=pk)
     project_reviews = ProjectReview.objects.filter(project=project)
     average_rating = get_average_rating(ProjectRating.objects.filter(project=project))
 
+    # Review Project Logic
+    review_form = ProjectReviewForm()
+    if request.method == 'POST':
+        form = ProjectReviewForm(request.POST, request.FILES)
+        # https://docs.djangoproject.com/en/6.0/topics/forms/modelforms/
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.reviewer = request.user.profile
+            review.project = project
+            review.save()
+            return redirect('diyprojects:project_detail', pk=pk)
     return render(request, 'diyprojects/project_detail.html',
                   {'project': project,
                    'project_reviews':project_reviews,
-                   'average_rating': average_rating})
+                   'average_rating': average_rating,
+                   'review_form': review_form})
 
 
 @login_required

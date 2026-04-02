@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project, ProjectCategory
+from .models import Project, ProjectRating, ProjectReview
 
 
 class ProjectForm(forms.ModelForm):
@@ -7,4 +7,10 @@ class ProjectForm(forms.ModelForm):
     creator = forms.CharField(disabled=True)
     class Meta:
         model = Project
-        fields = '__all__' #TODO: make category a dropdown of only two unique values
+        fields = '__all__'
+
+
+class ProjectReviewForm(forms.ModelForm):
+    class Meta:
+        model = ProjectReview
+        fields = ['comment', 'image']

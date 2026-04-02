@@ -5,12 +5,14 @@
         <h2>{{project.category.name}}</h2>
         <h3>{{project.title}}</h3>
         
-        <!--Rating-->
+        <!--Rating and Favorites-->
         {%if average_rating == -1%}
             <h4>No Ratings Yet</h4>
         {% else %}
             <h4>Rating: {{average_rating}} / 10</h4>
         {%endif%}
+
+        
 
         <!--Other info-->
         <p>Created on {{project.created_on}}</p>
@@ -32,9 +34,16 @@
         <h4>Reviews</h4>
         <ul>
             {%for review in project_reviews %}
+                <img src="{{review.image.url}}" alt="Review Image">
                 <li>"{{review.comment}}" - {{review.reviewer.display_name}}</li>
             {%endfor%}
         </ul>
+        
+        <!--Review Project-->
+        {%if user.is_authenticated%}
+            {%include 'diyprojects/project_review.html'%}
+        {%endif%}
+
 
         <!--Edit Project CTA-->
         {%if user.is_authenticated and user.profile == project.creator%}
