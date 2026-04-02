@@ -23,9 +23,11 @@
             {%endfor%}
         </ul>
     <h2>Other Projects</h2>
+        <ul>
         {%for project in other_projects%}
             <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
         {%endfor%}
+        </ul>
     {%else%}
         <h2>All Projects</h2>
         <ul>
