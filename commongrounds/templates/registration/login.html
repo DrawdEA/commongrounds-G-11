@@ -1,7 +1,9 @@
+<h1>Log In</h1>
 <form method="post">
     {%csrf_token%}
     {{form.as_p}}
     <button type="submit">Login</button>
     <br><br>
-    <a href="{% url 'password_reset' %}">Forgot password</a>
+    <a href="{% url 'password_reset' %}">Forgot password?</a> |
+    <a href="{% url 'accounts:register' %}">Create an Account</a>
 </form>
