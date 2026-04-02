@@ -142,4 +142,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #https://stackoverflow.com/questions/4870619/django-after-login-redirect-user-to-his-custom-page-mysite-com-username#:~:text=3%20Comments-,Add%20a%20comment,Settings.py
 LOGIN_REDIRECT_URL = '/'
-

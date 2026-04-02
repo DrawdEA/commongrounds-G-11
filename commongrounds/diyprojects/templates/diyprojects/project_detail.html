@@ -9,13 +9,13 @@
     <p>{{project.description}}</p>
     <h4>Materials</h4>
     <ul>
-        {% for material in project.splitMaterials %}
+        {% for material in project.split_materials %}
             <li>{{material}}</li>
         {% endfor %}
     </ul>
     <h4>Steps</h4>
     <ol>
-        {% for step in project.splitSteps %}
+        {% for step in project.split_steps %}
             <li>{{step}}</li>
         {% endfor %}
     </ol>
