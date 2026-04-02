@@ -2,11 +2,13 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Favorite, Project, ProjectCategory, ProjectRating, ProjectReview
+from .models import (Favorite, Project, ProjectCategory,
+                     ProjectRating, ProjectReview)
 
 
 class FavoriteAdmin(admin.ModelAdmin):
     model = Favorite
+
 
 class ProjectCategoryAdmin(admin.ModelAdmin):
     model = ProjectCategory

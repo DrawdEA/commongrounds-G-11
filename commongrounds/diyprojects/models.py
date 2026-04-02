@@ -5,6 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
+
 class ProjectCategory(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -31,11 +32,11 @@ class Project(models.Model):
     category = models.ForeignKey(ProjectCategory, on_delete=models.SET_NULL,
                                  related_name='projects', null=True)
     creator = models.ForeignKey(Profile, on_delete=models.SET_NULL,
-                                 related_name='created_projects', null=True)
+                                related_name='created_projects', null=True)
 
     def __str__(self):
         if not self.category:
-            return '{} under uncategorized'.format(self.title) 
+            return '{} under uncategorized'.format(self.title)
         return '{} under {}'.format(self.title, self.category.name)
 
     def get_absolute_url(self):
@@ -46,7 +47,6 @@ class Project(models.Model):
 
     def split_steps(self):
         return self.steps.split("|")
-    
 
     class Meta:
         ordering = ['-created_on']
@@ -60,7 +60,7 @@ class Favorite(models.Model):
         BACKLOG = "Backlog"
         TODO = "To-Do"
         DONE = "Done"
-    
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE,
                                 related_name='favorites')
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,

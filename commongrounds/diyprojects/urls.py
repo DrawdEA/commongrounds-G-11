@@ -8,7 +8,7 @@ urlpatterns = [
          name='project_detail'),
     path('project/add', project_add,
          name='project_add'),
-     path('project/<int:pk>/edit', project_edit, name='project_edit')
+    path('project/<int:pk>/edit', project_edit, name='project_edit')
 ]
 
 
