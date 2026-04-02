@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project, ProjectRating, ProjectReview
+from .models import Project, ProjectRating, ProjectReview, Favorite
 
 
 class ProjectForm(forms.ModelForm):

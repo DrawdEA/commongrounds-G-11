@@ -6,6 +6,10 @@
         <h3>{{project.title}}</h3>
         
         <!--Rating and Favorites-->
+        {%if user.is_authenticated%}
+            {%include 'diyprojects/project_favorite.html'%}
+        {%endif%}
+
         {%if average_rating == -1%}
             <h4>No Ratings Yet</h4>
         {% else %}

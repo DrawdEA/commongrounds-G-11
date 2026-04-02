@@ -41,27 +41,42 @@ def project_list(request):
 
 @login_required
 def project_detail(request, pk):
+    # How to handle multiple forms: https://stackoverflow.com/questions/866272/how-can-i-build-multiple-submit-buttons-django-form
+
     # Basic Preliminary Logic
     project = Project.objects.get(pk=pk)
     project_reviews = ProjectReview.objects.filter(project=project)
     average_rating = get_average_rating(ProjectRating.objects.filter(project=project))
 
+    # Favorit logic
+    is_favorited = Favorite.objects.filter(project=project, profile=request.user.profile).exists()
+
     # Review Project Logic
     review_form = ProjectReviewForm()
     if request.method == 'POST':
-        form = ProjectReviewForm(request.POST, request.FILES)
-        # https://docs.djangoproject.com/en/6.0/topics/forms/modelforms/
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.reviewer = request.user.profile
-            review.project = project
-            review.save()
-            return redirect('diyprojects:project_detail', pk=pk)
+        if 'review_form' in request.POST: 
+            form = ProjectReviewForm(request.POST, request.FILES)
+            # https://docs.djangoproject.com/en/6.0/topics/forms/modelforms/
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.reviewer = request.user.profile
+                review.project = project
+                review.save()
+        elif 'favorite_toggle' in request.POST:
+            project = Project.objects.get(pk=pk)
+            profile = request.user.profile
+            favorite = Favorite.objects.filter(project=project, profile=profile)
+            if favorite:
+                favorite.delete()
+            else:
+                Favorite.objects.create(project=project, profile=profile)
+        return redirect('diyprojects:project_detail', pk=pk)
     return render(request, 'diyprojects/project_detail.html',
                   {'project': project,
                    'project_reviews':project_reviews,
                    'average_rating': average_rating,
-                   'review_form': review_form})
+                   'review_form': review_form,
+                   'is_favorited': is_favorited})
 
 
 @login_required
