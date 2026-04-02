@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from .models import Project, Profile, Favorite, ProjectReview
+from .forms import ProjectForm
 # Create your views here.
 
 
@@ -26,7 +28,21 @@ def project_list(request):
                     {'project_list':projects})
 
 
+@login_required
 def project_detail(request, pk):
     project = Project.objects.get(pk=pk)
     return render(request, 'diyprojects/project_detail.html',
                   {'project': project})
+
+
+@login_required
+def project_add(request):
+    # https://docs.djangoproject.com/en/6.0/ref/forms/api/#s-dynamic-initial-values
+    creator_profile = Profile.objects.get(user=request.user) 
+    form = ProjectForm(initial={'creator': creator_profile.display_name})
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save()
+            return redirect('project_detail', pk=project.pk)
+    return render(request, 'diyprojects/project_add.html', {"form": form})
