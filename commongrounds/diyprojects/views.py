@@ -111,6 +111,10 @@ def project_add(request):
 def project_edit(request, pk):
     # https://www.geeksforgeeks.org/python/update-view-function-based-views-django/
     project = Project.objects.get(pk=pk)
+
+    if project.creator != request.user.profile:
+        return redirect('diyprojects:project_detail', pk=pk)
+    
     form = ProjectForm(initial={'title': project.title,
                                 'description': project.description,
                                 'materials': project.materials,
