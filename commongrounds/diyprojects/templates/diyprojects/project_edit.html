@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{%load static%}
+{%if user.is_authenticated%}
+    {%block header%}
+        <h1>Edit Project Details</h1>
+    {%endblock%}
+
+    {% block content %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+    {% endblock %}
+{%endif%}

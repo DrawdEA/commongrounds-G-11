@@ -1,0 +1,8 @@
+{%if user.is_authenticated%}
+    <form method="post">
+        {% csrf_token %}
+        <h4>Give a rating</h4>
+        {{ rating_form.as_p }}
+        <input type="submit" name="rating_form" value="Submit">
+    </form>
+{%endif%}

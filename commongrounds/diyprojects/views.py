@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Project, Profile, Favorite, ProjectReview, ProjectRating
-from .forms import ProjectForm, ProjectReviewForm
+from .forms import ProjectForm, ProjectReviewForm, ProjectRatingForm
 # Create your views here.
 
 
@@ -13,7 +13,7 @@ def get_average_rating(project_ratings):
     sum = 0
     count = 0
     for rating in project_ratings:
-        sum += rating
+        sum += rating.score
         count += 1
     return sum/count
 
@@ -47,35 +47,39 @@ def project_detail(request, pk):
     project = Project.objects.get(pk=pk)
     project_reviews = ProjectReview.objects.filter(project=project)
     average_rating = get_average_rating(ProjectRating.objects.filter(project=project))
-
-    # Favorit logic
     is_favorited = Favorite.objects.filter(project=project, profile=request.user.profile).exists()
 
-    # Review Project Logic
     review_form = ProjectReviewForm()
+    rating_form = ProjectRatingForm()
     if request.method == 'POST':
+        profile = request.user.profile
         if 'review_form' in request.POST: 
             form = ProjectReviewForm(request.POST, request.FILES)
             # https://docs.djangoproject.com/en/6.0/topics/forms/modelforms/
             if form.is_valid():
                 review = form.save(commit=False)
-                review.reviewer = request.user.profile
+                review.reviewer = profile
                 review.project = project
                 review.save()
         elif 'favorite_toggle' in request.POST:
-            project = Project.objects.get(pk=pk)
-            profile = request.user.profile
             favorite = Favorite.objects.filter(project=project, profile=profile)
             if favorite:
                 favorite.delete()
             else:
                 Favorite.objects.create(project=project, profile=profile)
+        elif 'rating_form' in request.POST:
+            rating_form = ProjectRatingForm(request.POST)
+            rating = rating_form.save(commit=False)
+            rating.project = project
+            rating.profile = profile
+            rating.save()
         return redirect('diyprojects:project_detail', pk=pk)
     return render(request, 'diyprojects/project_detail.html',
                   {'project': project,
                    'project_reviews':project_reviews,
                    'average_rating': average_rating,
                    'review_form': review_form,
+                   'rating_form': rating_form,
                    'is_favorited': is_favorited})
 
 
@@ -87,10 +91,25 @@ def project_add(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            project = form.save()
-            return redirect('project_detail', pk=project.pk)
+            project = form.save(commit=False)
+            project.creator = creator_profile
+            project.save()
+            return redirect('diyprojects:project_detail', pk=project.pk)
     return render(request, 'diyprojects/project_add.html', {"form": form})
 
 @login_required
-def project_edit(request):
-    pass
+def project_edit(request, pk):
+    # https://www.geeksforgeeks.org/python/update-view-function-based-views-django/
+    project = Project.objects.get(pk=pk)
+    form = ProjectForm(initial={'title': project.title,
+                                'description': project.description,
+                                'materials': project.materials,
+                                'steps': project.steps,
+                                'category': project.category,
+                                'creator': request.user.profile.display_name})
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('diyprojects:project_detail', pk=pk)
+    return render(request, 'diyprojects/project_edit.html', {"form": form})
