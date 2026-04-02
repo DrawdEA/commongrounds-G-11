@@ -70,6 +70,8 @@ class Favorite(models.Model):
 
 
 class ProjectReview(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE,
+                                related_name='project_reviews')
     reviewer = models.ForeignKey(Profile, on_delete=models.CASCADE,
                                  related_name="reviews")
     comment = models.TextField()
@@ -77,6 +79,8 @@ class ProjectReview(models.Model):
 
 
 class ProjectRating(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE,
+                                related_name="project_ratings", default=1)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
                                 related_name="ratings")
     # https://stackoverflow.com/questions/42425933/how-do-i-set-a-default-max-and-min-value-for-an-integerfield-django
