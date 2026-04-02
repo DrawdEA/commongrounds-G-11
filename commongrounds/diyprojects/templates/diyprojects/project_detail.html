@@ -40,7 +40,9 @@
         <h4>Reviews</h4>
         <ul>
             {%for review in project_reviews %}
-                <img src="{{review.image.url}}" alt="Review Image">
+                {%if review.image.url%}
+                    <img src="{{review.image.url}}" alt="Review Image">
+                {% endif %}
                 <li>"{{review.comment}}" - {{review.reviewer.display_name}}</li>
             {%endfor%}
         </ul>
