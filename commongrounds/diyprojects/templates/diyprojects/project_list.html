@@ -1,9 +1,38 @@
 {% extends 'diyprojects/base_diyprojects.html' %}
 {% load static %}
     {% block content %}
-    <ul>
-        {%for project in project_list%}
-        <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
+    {%if user.is_authenticated%}
+        <h2>Projects You Created</h2>
+        <ul>
+            {%for project in created_projects%}
+            <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
+            {%endfor%}
+        </ul>
+        
+        <h2>Projects You Favorited</h2>
+        <ul>
+            {%for project in favorited_projects%}
+            <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
+            {%endfor%}
+        </ul>
+
+        <h2>Projects You Reviewed</h2>
+        <ul>
+            {%for project in reviewed_projects%}
+            <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
+            {%endfor%}
+        </ul>
+    <h2>Other Projects</h2>
+        {%for project in other_projects%}
+            <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
         {%endfor%}
-    </ul>
+    {%else%}
+        <h2>All Projects</h2>
+        <ul>
+            {%for project in project_list%}
+            <a href="{{project.get_absolute_url}}"><li>{{project.title}} - {{ project.category.name}} </li></a>
+            {%endfor%}
+        </ul>
+    {%endif%}
+    <a href="{%url 'project_add'}%">Create a new Project</a>
 {% endblock %}
