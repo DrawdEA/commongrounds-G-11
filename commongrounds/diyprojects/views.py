@@ -77,10 +77,11 @@ def project_detail(request, pk):
                 Favorite.objects.create(project=project, profile=profile)
         elif 'rating_form' in request.POST:
             rating_form = ProjectRatingForm(request.POST)
-            rating = rating_form.save(commit=False)
-            rating.project = project
-            rating.profile = profile
-            rating.save()
+            if rating_form.is_valid():
+                rating = rating_form.save(commit=False)
+                rating.project = project
+                rating.profile = profile
+                rating.save()
         return redirect('diyprojects:project_detail', pk=pk)
     return render(request, 'diyprojects/project_detail.html',
                   {'project': project,
