@@ -5,7 +5,7 @@ from .models import Product, Transaction
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        exclude = ['owner']
+        exclude = ['owner', 'product_type']
 
 
 class TransactionForm(forms.ModelForm):

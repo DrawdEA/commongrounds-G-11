@@ -24,6 +24,7 @@ class Product(models.Model):
         ProductType,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name='products'
     )
     owner = models.ForeignKey(

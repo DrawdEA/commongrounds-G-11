@@ -1,14 +1,32 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}{{ object.name }} - Common Grounds{% endblock %}
+{% block title %}Common Grounds | {{ product.name }}{% endblock %}
 
 {% block content %}
-    <h1>{{ object.name }}</h1>
-    {% if object.product_type %}
-        <p><strong>Type:</strong> {{ object.product_type.name }}</p>
-    {% endif %}
-    <p><strong>Price:</strong> ₱{{ object.price }}</p>
-    <p><strong>Description:</strong></p>
-    <p>{{ object.description }}</p>
-    <p><a href="{% url 'merchstore:product_list' %}">Back to list</a></p>
+<h1>{{ product.name }}</h1>
+{% if product.image %}
+<img src="{{ product.image.url }}" alt="{{ product.name }}">
+{% endif %}
+<p>{{ product.description }}</p>
+<p>Price: {{ product.price }}</p>
+<p>Stock: {{ product.stock }}</p>
+<p>Status: {{ product.status }}</p>
+{% if product.product_type %}
+<p>Type: {{ product.product_type }}</p>
+{% endif %}
+
+{% if is_owner %}
+<a href="{% url 'merchstore:product_update' product.pk %}">Edit</a>
+{% endif %}
+
+{% if not is_owner %}
+<h2>Add to Cart</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" {% if product.stock == 0 %}disabled{% endif %}>Add to Cart</button>
+</form>
+{% endif %}
+
+<p><a href="{% url 'merchstore:product_list' %}">Back to store</a></p>
 {% endblock %}
