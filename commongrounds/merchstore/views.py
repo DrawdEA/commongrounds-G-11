@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Product, Transaction
 from .forms import ProductForm, TransactionForm
+from .strategies import AuthenticatedPurchaseStrategy, GuestPurchaseStrategy
 
 
 def product_list(request):
@@ -22,21 +23,29 @@ def product_list(request):
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     is_owner = request.user.is_authenticated and product.owner == request.user.profile
+
+    # Complete pending guest transaction after login
+    if request.user.is_authenticated and not is_owner:
+        pending = request.session.get('pending_transaction')
+        if pending and pending.get('product_pk') == pk:
+            Transaction.objects.create(
+                product=product,
+                buyer=request.user.profile,
+                amount=pending['amount']
+            )
+            del request.session['pending_transaction']
+            return redirect('merchstore:cart')
+
     form = TransactionForm()
     if request.method == 'POST':
-        if not request.user.is_authenticated:
-            return redirect('login')
         form = TransactionForm(request.POST)
         if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.product = product
-            transaction.buyer = request.user.profile
-            transaction.save()
-            product.stock = max(0, product.stock - transaction.amount)
-            if product.stock == 0:
-                product.status = Product.Status.OUT_OF_STOCK
-            product.save()
-            return redirect('merchstore:cart')
+            if request.user.is_authenticated:
+                strategy = AuthenticatedPurchaseStrategy()
+            else:
+                strategy = GuestPurchaseStrategy()
+            return strategy.execute(request, product, form)
+
     return render(request, 'merchstore/product_detail.html', {
         'product': product,
         'form': form,
