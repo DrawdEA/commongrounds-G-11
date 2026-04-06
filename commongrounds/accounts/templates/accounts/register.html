@@ -1,0 +1,14 @@
+{%extends 'base.html'%}
+
+{%block header%} 
+    <h1>Register</h1>
+{%endblock%}
+
+{%block content%}
+    <form method="post">
+        {%csrf_token%}
+        {{form.as_p}}
+        <input type="submit" value="Register">
+    </form>
+    <p>Have an account? <a href="{%url 'login'%}">Log In</a></p>
+{%endblock%}

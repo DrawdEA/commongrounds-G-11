@@ -1,22 +1,60 @@
 {% extends 'diyprojects/base_diyprojects.html' %}
 {% load static %}
     {% block content %}
-    <h2>{{project.category.name}}</h2>
-    <h3>{{project.title}}</h3>
-    <p>Created on {{project.created_on}}</p>
-    <p>Updated on {{project.updated_on}}</p>
-    <h4>Description</h4>
-    <p>{{project.description}}</p>
-    <h4>Materials</h4>
-    <ul>
-        {% for material in project.splitMaterials %}
-            <li>{{material}}</li>
-        {% endfor %}
-    </ul>
-    <h4>Steps</h4>
-    <ol>
-        {% for step in project.splitSteps %}
-            <li>{{step}}</li>
-        {% endfor %}
-    </ol>
-{% endblock %}
+        <!--Basic Info-->
+        <h2>{{project.category.name}}</h2>
+        <h3>{{project.title}}</h3>
+        
+        <!--Rating and Favorites-->
+        {%if user.is_authenticated%}
+            {%include 'diyprojects/project_favorite.html'%}
+        {%endif%}
+
+        {%if average_rating == -1%}
+            <h4>No Ratings Yet</h4>
+        {% else %}
+            <h4>Rating: {{average_rating}} / 10</h4>
+        {%endif%}
+
+        {%if user.is_authenticated%}
+            {%include 'diyprojects/project_rating.html'%}
+        {%endif%}
+
+        <!--Other info-->
+        <p>Created on {{project.created_on}}</p>
+        <p>Updated on {{project.updated_on}}</p>
+        <h4>Description</h4>
+        <p>{{project.description}}</p>
+        <h4>Materials</h4>
+        <ul>
+            {% for material in project.split_materials %}
+                <li>{{material}}</li>
+            {% endfor %}
+        </ul>
+        <h4>Steps</h4>
+        <ol>
+            {% for step in project.split_steps %}
+                <li>{{step}}</li>
+            {% endfor %}
+        </ol>
+        <h4>Reviews</h4>
+        <ul>
+            {%for review in project_reviews %}
+                {%if review.image.url%}
+                    <img src="{{review.image.url}}" alt="Review Image">
+                {% endif %}
+                <li>"{{review.comment}}" - {{review.reviewer.display_name}}</li>
+            {%endfor%}
+        </ul>
+        
+        <!--Review Project-->
+        {%if user.is_authenticated%}
+            {%include 'diyprojects/project_review.html'%}
+        {%endif%}
+
+
+        <!--Edit Project CTA-->
+        {%if user.is_authenticated and user.profile == project.creator%}
+            <a href="{%url 'diyprojects:project_edit' pk=project.pk %}">Edit Project Details</a>
+        {%endif%}
+    {% endblock %}

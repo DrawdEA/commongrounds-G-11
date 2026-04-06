@@ -1,0 +1,10 @@
+{%if user.is_authenticated%}
+    <form method="post">
+        {% csrf_token %}
+        {% if is_favorited %}
+            <button name="favorite_toggle" type="submit">Unfavorite</button>
+        {%else%}
+            <button name="favorite_toggle" type="submit">Favorite</button>
+        {%endif%}
+    </form>
+{%endif%}
