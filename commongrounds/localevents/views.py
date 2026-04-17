@@ -1,10 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Event
-
+from .forms import EventForm, SignupForm
+from django.contrib.auth.decorators import login_required
 
 def event_list(request):
-    events = Event.objects.all()
-    ctx = {'events': events}
+    all_events = Event.objects.all()
+
+    if request.user.is_authenticated:
+        profile = request.user.profile
+        my_events = Event.objects.filter(creator=profile)
+        signedup_events = Event.objects.filter(signups__user_registrant=profile)
+        events = all_events.exclude(id__in=my_events).exclude(id__in=signedup_events)
+
+    ctx = {
+        'events': events,
+        'my_events': my_events,
+        'signedup_events': signedup_events    
+    }
     return render(request, 'localevents/event_list.html', ctx)
 
 
@@ -13,3 +25,63 @@ def event_detail(request, pk):
     ctx = {"event": event}
 
     return render(request, 'localevents/event_detail.html', ctx)
+
+
+@login_required
+def event_create(request):
+    profile = request.user.profile
+
+    if profile.role != 'Event Organizer':
+        return redirect('event_list')
+    else:
+        event_form = EventForm()
+        if (request.method == "POST"):
+            event_form = EventForm(request.POST, request.FILES)
+            if event_form.is_valid():
+                event = event_form.save()
+                event.organizer.add(request.user.profile)
+                return redirect('localevents:event_detail', pk=event.pk)
+        ctx = {"event_form": event_form, }
+        return render(request, 'localevents/event_create.html', ctx)
+
+@login_required
+def event_update(request, pk):
+    event = Event.objects.get(pk=pk)
+    profile = request.user.profile
+
+    if profile.role != 'Event Organizer':
+        return redirect('event_list')
+    
+    if not event.organizer.filter(id=profile.id).exists():
+        return redirect('event_list')
+
+    else:
+        event_form = EventForm(request.POST, request.FILES, instance=event)
+        if (request.method == "POST"):
+            event_form = EventForm(request.POST, request.FILES, instance=event)
+            if event_form.is_valid():
+                event = event_form.save()
+                if event.signups.count() >= event.event_capacity:
+                    event.status = 'FULL'
+                else:
+                    event.status = 'AVAIL'
+                return redirect('localevents:event_detail', pk=event.pk)
+        ctx = {"event_form": event_form}
+        return render(request, 'localevents/event_update.html', ctx)
+
+def event_signup(request, pk):
+    event = Event.objects.get(pk=pk)
+    if request.user.is_authenticated:
+        return redirect('event_list')
+    if event.signups.count() >= event.event_capacity:
+        return redirect('event_list')
+    signup_form = SignupForm()
+    if (request.method == "POST"):
+        signup_form = SignupForm(request.POST, request.FILES)
+        if signup_form.is_valid():
+            signup = signup_form.save(commit=False)
+            signup.event = event
+            signup.save()
+            return redirect('localevents:event_detail', pk=event.pk)
+    ctx = {"event": event, "signup_form": signup_form }
+    return render(request, 'localevents/event_signup.html', ctx)
