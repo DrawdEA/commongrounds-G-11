@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{%load static%}
+
+{%block header%}
+    <h1>Update Profile</h1>
+{%endblock%}
+
+{% block content %}
+    <h2>Your current display name is {{display_name}}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

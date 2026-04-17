@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Common Grounds | Home{% endblock %}
+
+{% block content %}
+<h1>Common Grounds</h1>
+<ul>
+    <li><a href="{% url 'accounts:index' %}">Accounts</a></li>
+    <li><a href="{% url 'localevents:event_list' %}">Local Events</a></li>
+    <li><a href="{% url 'commissions:commission_list' %}">Commissions</a></li>
+    <li><a href="{% url 'diyprojects:project_list' %}">DIY Projects</a></li>
+    <li><a href="{% url 'merchstore:product_list' %}">Merch Store</a></li>
+    <li><a href="{% url 'bookclub:book_list' %}">Book Club</a></li>
+</ul>
+{% endblock %}

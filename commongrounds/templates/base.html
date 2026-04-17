@@ -9,6 +9,11 @@
         <div id="content">
             {%block content%}{%endblock%}
         </div>
+        {% if user.is_authenticated %}
+                {%include 'registration/logout.html'%}
+        {%else%}
+                <a href="{%url 'login' %}"></a>
+        {% endif %}
         {%block scripts%}{%endblock%}
     </body>
 </html>

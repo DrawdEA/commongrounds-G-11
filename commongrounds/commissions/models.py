@@ -3,6 +3,7 @@ from django.urls import reverse
 
 # Create your models here.
 
+
 class CommissionType(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
