@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MinValueValidator
+from accounts.models import Profile
 
 
 class EventType(models.Model):
@@ -22,8 +23,11 @@ class Event(models.Model):
         null=True,
         related_name='events',
     )
-    organizer = models.ManyToManyField(Profile)
-    event_image = models.ImageField()
+    organizer = models.ManyToManyField(
+        Profile,
+        blank=True
+    )
+    event_image = models.ImageField(upload_to='images/', null=True)
     description = models.TextField()
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField(null=False)
@@ -47,7 +51,7 @@ class Event(models.Model):
         ordering = ['-created_on']
 
 
-class EventSignup():
+class EventSignup(models.Model):
     event = models.ForeignKey(
         Event,
         on_delete=models.CASCADE,
@@ -58,7 +62,7 @@ class EventSignup():
         Profile,
         on_delete=models.CASCADE,
         null=True,
-        blank=True;
+        blank=True,
         related_name='signup_user'
     )
     new_registrant = models.CharField(
