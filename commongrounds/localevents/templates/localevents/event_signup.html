@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title%}
+    <title> Event Signup </title>    
+{% endblock %}
+
+{% block body %} 
+    <h1>{{ event.title }} - {{ event.category }}</h1>
+    <li>
+        <ul> <strong>About the Event: </strong>{{event.description}} </ul>
+        <ul> <strong>Where: </strong> {{event.location}}</ul>
+        <ul> <strong>From </strong>{{event.start_time}} <strong>to </strong>{{event.end_time}}</ul>
+        <ul> <strong>Created On: </strong>{{event.created_on}} </ul>
+        <ul> <strong>Last Updated: </strong>{{event.updated_on}} </ul>
+    </li>
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {{ signup_form }}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}
