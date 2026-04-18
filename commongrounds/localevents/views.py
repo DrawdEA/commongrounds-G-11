@@ -11,19 +11,30 @@ def event_list(request):
         my_events = Event.objects.filter(creator=profile)
         signedup_events = Event.objects.filter(signups__user_registrant=profile)
         events = all_events.exclude(id__in=my_events).exclude(id__in=signedup_events)
-
-    ctx = {
-        'events': events,
-        'my_events': my_events,
-        'signedup_events': signedup_events    
-    }
-    return render(request, 'localevents/event_list.html', ctx)
+        ctx = {
+            'events': events,
+            'my_events': my_events,
+            'signedup_events': signedup_events    
+        }
+        return render(request, 'localevents/event_list.html', ctx)
+    else: 
+        ctx = {
+            'events': all_events
+        }
+        return render(request, 'localevents/event_list.html', ctx)
 
 
 def event_detail(request, pk):
     event = Event.objects.get(id=pk)
+    if request.method == "POST":
+        print("Post hit")
+        if request.user.is_authenticated:
+            event.signups.add(request.user)
+            print("Authenticated signup hit")
+            return redirect('localevents:event_list')
+        else:
+            return redirect('localevents:event_signup', pk=pk)
     ctx = {"event": event}
-
     return render(request, 'localevents/event_detail.html', ctx)
 
 
@@ -50,10 +61,10 @@ def event_update(request, pk):
     profile = request.user.profile
 
     if profile.role != 'Event Organizer':
-        return redirect('event_list')
+        return redirect('localevents:event_list')
     
     if not event.organizer.filter(id=profile.id).exists():
-        return redirect('event_list')
+        return redirect('localevents:event_list')
 
     else:
         event_form = EventForm(request.POST, request.FILES, instance=event)
@@ -70,18 +81,14 @@ def event_update(request, pk):
         return render(request, 'localevents/event_update.html', ctx)
 
 def event_signup(request, pk):
+    print("EVENT SIGNUP VIEW HIT")
     event = Event.objects.get(pk=pk)
-    if request.user.is_authenticated:
-        return redirect('event_list')
-    if event.signups.count() >= event.event_capacity:
-        return redirect('event_list')
-    signup_form = SignupForm()
-    if (request.method == "POST"):
-        signup_form = SignupForm(request.POST, request.FILES)
-        if signup_form.is_valid():
-            signup = signup_form.save(commit=False)
-            signup.event = event
-            signup.save()
-            return redirect('localevents:event_detail', pk=event.pk)
+    signup_form = SignupForm(request.POST, request.FILES)
+    if signup_form.is_valid() and request.method == 'POST':
+        signup = signup_form.save(commit=False)
+        signup.event = event
+        signup.save()
+        print("guest hit")
+        return redirect('localevents:event_list')
     ctx = {"event": event, "signup_form": signup_form }
     return render(request, 'localevents/event_signup.html', ctx)
