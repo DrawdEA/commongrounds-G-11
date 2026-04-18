@@ -33,10 +33,12 @@ class Event(models.Model):
     start_time = models.DateTimeField(null=False)
     end_time = models.DateTimeField(null=False)
     event_capacity = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(1)],
+        default=0
     )
     status = models.CharField(
-        choices = [('AVAIL', 'Available'), ('FULL', 'Full'), ('DONE', 'Done'), ('CANCEL', 'Cancelled')]
+        choices = [('AVAIL', 'Available'), ('FULL', 'Full'), ('DONE', 'Done'), ('CANCEL', 'Cancelled')],
+        null=True
     )
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     updated_on = models.DateTimeField(auto_now=True,  null=True)
