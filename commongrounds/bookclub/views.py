@@ -22,7 +22,6 @@ class BookListView(ListView):
         context = super().get_context_data(**kwargs)
         all_books_qs = Book.objects.all()
 
-        # If logged in and has a profile, split the lists
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             profile = self.request.user.profile
             
@@ -35,7 +34,6 @@ class BookListView(ListView):
             context['bookmarked_books'] = bookmarked
             context['reviewed_books'] = reviewed
             
-            # Remove the above books from the 'All Books' list
             context['all_books'] = all_books_qs.exclude(id__in=contributed).exclude(id__in=bookmarked).exclude(id__in=reviewed)
             
         return context

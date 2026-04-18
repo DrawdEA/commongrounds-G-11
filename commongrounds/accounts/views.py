@@ -26,7 +26,6 @@ def register(request):
 
 @login_required
 def profile_update(request, username):
-    # If user tries to access a different profile
     if request.user.username != username:
         return HttpResponse("Sorry, you can't access this.")
     

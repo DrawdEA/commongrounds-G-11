@@ -33,7 +33,6 @@ class Book(models.Model):
     
 
 class BookReview(models.Model):
-    #userReviewer, foreign key to profile, cascade deletion, set upon login
     user_reviewer = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
     anon_reviewer = models.CharField(max_length=255, null=True, blank=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')

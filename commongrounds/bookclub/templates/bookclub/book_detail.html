@@ -15,7 +15,7 @@
   {% endif %}
 
   {% if is_contributor %}
-    <p><a href="{% url 'bookclub:book_update' book.pk %}">✏️ Edit Book Details</a></p>
+    <p><a href="{% url 'bookclub:book_update' book.pk %}">Edit Book Details</a></p>
   {% endif %}
 
   <hr>
@@ -24,7 +24,7 @@
   {% if user.is_authenticated %}
     <form method="POST">
       {% csrf_token %}
-      <button type="submit" name="bookmark" value=""add">🔖 Bookmark this Book</button>
+      <button type="submit" name="bookmark" value=""add">Bookmark this Book</button>
     </form>
   {% endif %}
 
@@ -32,7 +32,7 @@
 
   <h2>Reviews</h2>
   {% for review in reviews %}
-    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+    <div>
       <h4>{{ review.title }}</h4>
       <p>{{ review.comment }}</p>
       <small>Reviewed by: 
