@@ -11,8 +11,12 @@
         <ul> <strong>Created On: </strong>{{event.created_on}} </ul>
         <ul> <strong>Last Updated: </strong>{{event.updated_on}} </ul>
     </li>
-    <form method="post" action="{% url 'event_signup' event.id %}">
+    <form method="post">
         {% csrf_token %}
-    <button type="submit">Sign Up</button>
-</form>
+        <button type="submit" 
+            {% if event.signups.count >= event.event_capacity %}disabled{% endif %}>
+            Sign Up
+        </button>
+    </form>
 {% endblock %}
+
