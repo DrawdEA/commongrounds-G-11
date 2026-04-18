@@ -1,21 +1,60 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{{ book.title }}</h1>
+  <h1>{{ book.title }}</h1>
+  <p><strong>Author:</strong> {{ book.author }}</p>
+  <p><strong>Genre:</strong> {{ book.genre.name }}</p>
+  <p><strong>Contributor:</strong> {{ book.contributor.display_name|default:"Unknown" }}</p>
+  <p><strong>Synopsis:</strong> {{ book.synopsis }}</p>
 
-    <p><strong>Author:</strong> {{ book.author }}</p>
-    
-    <p><strong>Genre: </strong>
-        {% if book.genre %}
-            {{ book.genre.name }}
+  {% if book.available_to_borrow %}
+    <p style="color: green;"><strong>Status: Available to Borrow!</strong></p>
+    <a href="{% url 'bookclub:book_borrow' book.pk %}"><button>Borrow this Book</button></a>
+  {% else %}
+    <p style="color: red;"><strong>Status: Currently Borrowed</strong></p>
+  {% endif %}
+
+  {% if is_contributor %}
+    <p><a href="{% url 'bookclub:book_update' book.pk %}">✏️ Edit Book Details</a></p>
+  {% endif %}
+
+  <hr>
+
+  <p><strong>Bookmarks:</strong> {{ bookmark_count }}</p>
+  {% if user.is_authenticated %}
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" name="bookmark" value=""add">🔖 Bookmark this Book</button>
+    </form>
+  {% endif %}
+
+  <hr>
+
+  <h2>Reviews</h2>
+  {% for review in reviews %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+      <h4>{{ review.title }}</h4>
+      <p>{{ review.comment }}</p>
+      <small>Reviewed by: 
+        {% if review.user_reviewer %}
+          {{ review.user_reviewer.display_name }}
         {% else %}
-            Uncategorized
+          {{ review.anon_reviewer }}
         {% endif %}
-    </p>
-    
-    <p><strong>Year:</strong> {{ book.publication_year }}</p>
-    
-    <p><strong>Added to Club On:</strong> {{ book.created_on|date}}</p>
+      </small>
+    </div>
+  {% empty %}
+    <p>No reviews yet. Be the first!</p>
+  {% endfor %}
 
-    <a href="{% url 'bookclub:book_list' %}" class="back-link">Back to Book List</a>
+  <h3>Leave a Review</h3>
+  <form method="POST">
+    {% csrf_token %}
+    {{ review_form.as_p }}
+    <button type="submit">Submit Review</button>
+  </form>
+
+  <br>
+  <a href="{% url 'bookclub:book_list'%}">Back to List</a>
+  
 {% endblock %}
