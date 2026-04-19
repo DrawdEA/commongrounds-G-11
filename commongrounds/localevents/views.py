@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Event
+from .models import Event, EventSignup
 from .forms import EventForm, SignupForm
 from django.contrib.auth.decorators import login_required
 
@@ -8,7 +9,7 @@ def event_list(request):
 
     if request.user.is_authenticated:
         profile = request.user.profile
-        my_events = Event.objects.filter(creator=profile)
+        my_events = Event.objects.filter(organizer=profile)
         signedup_events = Event.objects.filter(signups__user_registrant=profile)
         events = all_events.exclude(id__in=my_events).exclude(id__in=signedup_events)
         ctx = {
@@ -26,15 +27,28 @@ def event_list(request):
 
 def event_detail(request, pk):
     event = Event.objects.get(id=pk)
+    signed_up = False
+    if request.user.is_authenticated:
+        signed_up = event.signups.filter(user_registrant=request.user.profile).exists()
     if request.method == "POST":
         print("Post hit")
         if request.user.is_authenticated:
             event.signups.add(request.user)
+            EventSignup.objects.create(
+                event = event,
+                user_registrant = request.user.profile
+            )
+            if event.signups.count() >= event.event_capacity:
+                event.status = 'FULL'
+                event.save()
             print("Authenticated signup hit")
+            print(event.status)
             return redirect('localevents:event_list')
         else:
             return redirect('localevents:event_signup', pk=pk)
-    ctx = {"event": event}
+    ctx = {
+        "event": event,
+        "signedup": signed_up}
     return render(request, 'localevents/event_detail.html', ctx)
 
 
