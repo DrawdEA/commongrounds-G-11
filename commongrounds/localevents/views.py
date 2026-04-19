@@ -33,7 +33,6 @@ def event_detail(request, pk):
     if request.method == "POST":
         print("Post hit")
         if request.user.is_authenticated:
-            event.signups.add(request.user)
             EventSignup.objects.create(
                 event = event,
                 user_registrant = request.user.profile
@@ -56,28 +55,21 @@ def event_detail(request, pk):
 @role_required("Event Organizer")
 def event_create(request):
     profile = request.user.profile
-
-    if profile.role != 'Event Organizer':
-        return redirect('event_list')
-    else:
-        event_form = EventForm()
-        if (request.method == "POST"):
-            event_form = EventForm(request.POST, request.FILES)
-            if event_form.is_valid():
-                event = event_form.save()
-                event.organizer.add(request.user.profile)
-                return redirect('localevents:event_detail', pk=event.pk)
-        ctx = {"event_form": event_form, }
-        return render(request, 'localevents/event_create.html', ctx)
+    event_form = EventForm()
+    if (request.method == "POST"):
+        event_form = EventForm(request.POST, request.FILES)
+        if event_form.is_valid():
+            event = event_form.save()
+            event.organizer.add(request.user.profile)
+            return redirect('localevents:event_detail', pk=event.pk)
+    ctx = {"event_form": event_form, }
+    return render(request, 'localevents/event_create.html', ctx)
 
 @login_required
 @role_required("Event Organizer")
 def event_update(request, pk):
     event = Event.objects.get(pk=pk)
     profile = request.user.profile
-
-    if profile.role != 'Event Organizer':
-        return redirect('localevents:event_list')
     
     if not event.organizer.filter(id=profile.id).exists():
         return redirect('localevents:event_list')
@@ -88,10 +80,12 @@ def event_update(request, pk):
             event_form = EventForm(request.POST, request.FILES, instance=event)
             if event_form.is_valid():
                 event = event_form.save()
-                if event.signups.count() >= event.event_capacity:
-                    event.status = 'FULL'
-                else:
-                    event.status = 'AVAIL'
+                if event.status != 'DONE' and event.status != 'CANCEL':
+                    if event.signups.count() >= event.event_capacity:
+                        event.status = 'FULL'
+                    else:
+                        event.status = 'AVAIL'
+                    event.save()
                 return redirect('localevents:event_detail', pk=event.pk)
         ctx = {"event_form": event_form}
         return render(request, 'localevents/event_update.html', ctx)
@@ -104,7 +98,11 @@ def event_signup(request, pk):
         signup = signup_form.save(commit=False)
         signup.event = event
         signup.save()
+        if event.signups.count() >= event.event_capacity:
+            event.status = 'FULL'
+            event.save()
         print("guest hit")
+        print(event.status)
         return redirect('localevents:event_list')
     ctx = {"event": event, "signup_form": signup_form }
     return render(request, 'localevents/event_signup.html', ctx)
