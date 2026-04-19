@@ -8,14 +8,28 @@
     <h1>{{ event.title }} - {{ event.category }}</h1>
     <li>
         <ul> <strong>About the Event: </strong>{{event.description}} </ul>
+        <ul> <img src="{{ event.event_image.url }}" alt="Event Image"> </ul>
         <ul> <strong>Where: </strong> {{event.location}}</ul>
+                <ul> <strong>Organizer/s: </strong>
+            {% for org in event.organizer.all %} 
+                <li>{{org.display_name}}</li>
+            {% empty %}
+                <li>No organizers</li>
+            {% endfor %}
+        </ul>
         <ul> <strong>From </strong>{{event.start_time}} <strong>to </strong>{{event.end_time}}</ul>
+        <ul> <strong>Status: </strong>{{event.get_status_display}} </ul>        
+        <ul> <strong>Capacity: </strong>{{event.signups.count}} / {{event.event_capacity}}</ul>
         <ul> <strong>Created On: </strong>{{event.created_on}} </ul>
         <ul> <strong>Last Updated: </strong>{{event.updated_on}} </ul>
     </li>
-    <form enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        {{ signup_form }}
-        <input type="submit" value="Submit">
-    </form>
+    {% if event.signups.count >= event.event_capacity %}
+        <p><strong>Event has reached capacity!</strong></p>
+    {% else %}
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            {{ signup_form }}
+            <input type="submit" value="Submit">
+        </form>
+    {% endif %}
 {% endblock %}
