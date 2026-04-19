@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Event
 from .models import Event, EventSignup
 from .forms import EventForm, SignupForm
 from django.contrib.auth.decorators import login_required
+from accounts.decorators import role_required
 
 def event_list(request):
     all_events = Event.objects.all()
@@ -53,6 +53,7 @@ def event_detail(request, pk):
 
 
 @login_required
+@role_required("Event Organizer")
 def event_create(request):
     profile = request.user.profile
 
@@ -70,6 +71,7 @@ def event_create(request):
         return render(request, 'localevents/event_create.html', ctx)
 
 @login_required
+@role_required("Event Organizer")
 def event_update(request, pk):
     event = Event.objects.get(pk=pk)
     profile = request.user.profile
