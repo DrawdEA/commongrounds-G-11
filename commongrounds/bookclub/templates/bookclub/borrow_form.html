@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Borrow Book</h1>
+  
+  <div>
+    <h3>You are borrowing:</h3>
+    <p><strong>{{ book.title }}</strong> by {{ book.author }}</p>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <p><em>Note: The return date will automatically be set to exactly two weeks (14 days) from the date you select above, including weekends and holidays.</em></p>
+    
+    <button type="submit">Confirm Borrow</button>
+  </form>
+
+  <br>
+  <a href="{% url 'bookclub:book_detail' book.pk %}">Cancel</a>
+
+{% endblock %}

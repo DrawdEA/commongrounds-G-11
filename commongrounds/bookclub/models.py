@@ -31,40 +31,30 @@ class Book(models.Model):
     
 
 class BookReview(models.Model):
-    #userReviewer, foreign key to profile, cascade deletion, set upon login
-    user_reviewer = models.ForeignKey(Profile, on_delete=models.CASCADE)
-
-    #anonReviewer, text, set when not logged in
-    anon_reviwer = models.TextField()
-
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-
-    title = models.CharField()
+    user_reviewer = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    anon_reviewer = models.CharField(max_length=255, null=True, blank=True)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
+    title = models.CharField(max_length=255)
     comment = models.TextField()
 
     def __str__(self):
-        return self.title 
+        return f"Review: {self.title} by {self.user_reviewer or self.anon_reviewer}"
 
 class Bookmark(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    date_bookmarked = models.DateField()
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='bookmarks')
+    date_bookmarked = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return self
+        return f"{self.profile} bookmarked {self.book}"
 
 class Borrow(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-
-    #borrower, foreignkey to profile, cascading deletion, set upon login
-    borrower = models.ForeignKey(Profile, on_delete=models.CASCADE)
-
-    #name, characterfield, set when not logged in
-    name = models.CharField()
-
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='borrows')
+    borrower = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     date_borrowed = models.DateField()
     date_to_return = models.DateField()
 
     def __str__(self):
-        return self
+        return f"{self.name or self.borrower} borrowed {self.book}"
 
