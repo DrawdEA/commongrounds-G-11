@@ -1,18 +1,32 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Merchandise - Common Grounds{% endblock %}
+{% block title %}Common Grounds | Merch Store{% endblock %}
 
 {% block content %}
-    <h1>Merchandise</h1>
-    <ul>
-        {% for product in object_list %}
-            <li>
-                <a href="{% url 'merchstore:product_detail' product.pk %}">{{ product.name }}</a>
-                {% if product.product_type %}({{ product.product_type.name }}){% endif %}
-                — ₱{{ product.price }}
-            </li>
-        {% empty %}
-            <li>No products yet.</li>
-        {% endfor %}
-    </ul>
+<h1>Merch Store</h1>
+<a href="{% url 'merchstore:product_create' %}">Add Product</a>
+
+{% if my_products %}
+<h2>My Products</h2>
+<ul>
+    {% for product in my_products %}
+    <li>
+        <a href="{% url 'merchstore:product_detail' product.pk %}">{{ product.name }}</a>
+        — {{ product.price }} | {{ product.status }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<h2>All Products</h2>
+<ul>
+    {% for product in other_products %}
+    <li>
+        <a href="{% url 'merchstore:product_detail' product.pk %}">{{ product.name }}</a>
+        — {{ product.price }} | {{ product.status }}
+    </li>
+    {% empty %}
+    <li>No products available.</li>
+    {% endfor %}
+</ul>
 {% endblock %}
