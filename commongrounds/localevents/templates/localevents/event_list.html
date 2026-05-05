@@ -5,8 +5,26 @@
 {% block content %}
     <h1>Local Events</h1>
     <ul>
-        {% for event in events %}
-            <li><a href = "{{event.get_absolute_url}}">{{event.title}} - {{event.category}}</a></li>
-        {% endfor %}
+        {% if user.is_authenticated %}
+            <h1>My Events</h1>
+            {% for my_event in my_events %}
+                <li><a href = "{{my_event.get_absolute_url}}">{{my_event.title}} - {{my_event.category}}</a></li>
+            {% endfor %}
+            <h1>Signed Up</h1>
+            {% for signedup_event in signedup_events %}
+                <li><a href = "{{signedup_event.get_absolute_url}}">{{signedup_event.title}} - {{signedup_event.category}}</a></li>
+            {% endfor %}
+            <h1>Other Events</h1>
+            {% for event in events %}
+                <li><a href = "{{event.get_absolute_url}}">{{event.title}} - {{event.category}}</a></li>
+            {% endfor %}
+        {% else %}
+            <h1>Events</h1>
+            {% for event in events %}
+                <li><a href = "{{event.get_absolute_url}}">{{event.title}} - {{event.category}}</a></li>
+            {% endfor %}
+        {% endif %}
+    <a href = "{% url 'localevents:event_create' %}">Create an event</a>
+
     </ul>
 {% endblock %}
