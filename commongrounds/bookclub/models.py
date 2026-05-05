@@ -37,7 +37,7 @@ class Book(models.Model):
         return self.title 
     
 
-class BookReview(models.model):
+class BookReview(models.Model):
     #userReviewer, foreign key to profile, cascade deletion, set upon login
     user_reviewer = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
