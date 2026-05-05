@@ -8,6 +8,7 @@
 
     {% if request.user.is_authenticated and request.user.profile == commission.maker %}
         <p><a href="{% url 'commissions:commission_update' commission.pk %}">[Edit this Commission]</a></p>
+        
     {% endif %}
 
     {% if commission.commission_type %}
@@ -35,6 +36,7 @@
                     {% if not job.is_full %}
                         <form method="POST">
                             {% csrf_token %}
+                            {{job_application_form}}
                             <input type="hidden" name="job_id" value="{{ job.pk }}">
                             <button type="submit">Apply to Job</button>
                         </form>
