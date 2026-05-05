@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Case, When, Value, IntegerField
 from django.urls import reverse
 from accounts.models import Profile
 
@@ -22,6 +23,8 @@ class Commission(models.Model):
     STATUS_CHOICES = [
         ('Open', 'Open'),
         ('Full', 'Full'),
+        ('Completed', 'Completed'),
+        ('Discontinued', 'Discontinued'),
     ]
 
     title = models.CharField(max_length=255)
@@ -88,7 +91,15 @@ class Job(models.Model):
         return f"{self.role} - {self.commission.title}"
 
     class Meta:
-        ordering = ['status', '-manpower_required', 'role']
+        ordering = [
+            Case(
+                When(status='Open', then=Value(1)),
+                When(status='Full', then=Value(2)),
+                output_field=IntegerField(),
+            ),
+            '-manpower_required',
+            'role',
+        ]
         verbose_name = 'job'
         verbose_name_plural = 'jobs'
 
@@ -124,6 +135,14 @@ class JobApplication(models.Model):
         return f"{self.applicant} - {self.job}"
 
     class Meta:
-        ordering = ['status', '-applied_on']
+        ordering = [
+            Case(
+                When(status='Pending', then=Value(1)),
+                When(status='Accepted', then=Value(2)),
+                When(status='Rejected', then=Value(3)),
+                output_field=IntegerField(),
+            ),
+            '-applied_on',
+        ]
         verbose_name = 'job application'
         verbose_name_plural = 'job applications'
