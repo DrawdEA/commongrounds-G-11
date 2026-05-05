@@ -52,7 +52,7 @@ class BookReview(models.Model):
     def __str__(self):
         return self.title 
 
-class Bookmark(models.model):
+class Bookmark(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     date_bookmarked = models.DateField()
@@ -60,7 +60,7 @@ class Bookmark(models.model):
     def __str__(self):
         return self
 
-class Borrow(models.model):
+class Borrow(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     #borrower, foreignkey to profile, cascading deletion, set upon login
