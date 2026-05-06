@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Product, Transaction
 from .forms import ProductForm, TransactionForm
 from .strategies import AuthenticatedPurchaseStrategy, GuestPurchaseStrategy
+from accounts.decorators import role_required
 
 
 def product_list(request):
@@ -54,6 +55,7 @@ def product_detail(request, pk):
 
 
 @login_required
+@role_required("Market Seller")
 def product_create(request):
     form = ProductForm()
     if request.method == 'POST':
@@ -67,6 +69,7 @@ def product_create(request):
 
 
 @login_required
+@role_required("Market Seller")
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if product.owner != request.user.profile:

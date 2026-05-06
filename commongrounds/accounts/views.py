@@ -18,7 +18,7 @@ def register(request):
             Profile.objects.create(user=user,
                                    display_name=user.username,
                                    email_address=form.cleaned_data['email'],
-                                   role=Profile.COMMUNITY_MEMBER)
+                                   role="Normal")
             return redirect('login')
     else:
         form = CustomUserCreationForm()
