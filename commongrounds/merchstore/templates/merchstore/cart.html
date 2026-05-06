@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Common Grounds | Cart{% endblock %}
+
+{% block content %}
+<h1>Your Cart</h1>
+{% for owner, transactions in grouped %}
+<h2>{{ owner }}</h2>
+<ul>
+    {% for transaction in transactions %}
+    <li>
+        <a href="{% url 'merchstore:product_detail' transaction.product.pk %}">{{ transaction.product.name }}</a>
+        x{{ transaction.amount }} — {{ transaction.product.price }}
+    </li>
+    {% endfor %}
+</ul>
+{% empty %}
+<p>Your cart is empty.</p>
+{% endfor %}
+<p><a href="{% url 'merchstore:product_list' %}">Continue shopping</a></p>
+{% endblock %}

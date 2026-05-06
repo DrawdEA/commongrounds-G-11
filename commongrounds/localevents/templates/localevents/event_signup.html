@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ event.title }} - Common Grounds{% endblock %}
+{% block title%}
+    <title> Event Signup </title>    
+{% endblock %}
 
-{% block content %}
+{% block content %} 
     <h1>{{ event.title }} - {{ event.category }}</h1>
     <li>
-        <ul> <strong> About the Event: </strong>{{event.description}} </ul>
+        <ul> <strong>About the Event: </strong>{{event.description}} </ul>
         <ul> <img src="{{ event.event_image.url }}" alt="Event Image"> </ul>
         <ul> <strong>Where: </strong> {{event.location}}</ul>
-        <ul> <strong>Organizer/s: </strong>
+                <ul> <strong>Organizer/s: </strong>
             {% for org in event.organizer.all %} 
                 <li>{{org.display_name}}</li>
             {% empty %}
@@ -16,24 +18,18 @@
             {% endfor %}
         </ul>
         <ul> <strong>From </strong>{{event.start_time}} <strong>to </strong>{{event.end_time}}</ul>
-        <ul> <strong>Status: </strong>{{event.get_status_display}} </ul>
+        <ul> <strong>Status: </strong>{{event.get_status_display}} </ul>        
         <ul> <strong>Capacity: </strong>{{event.signups.count}} / {{event.event_capacity}}</ul>
         <ul> <strong>Created On: </strong>{{event.created_on}} </ul>
         <ul> <strong>Last Updated: </strong>{{event.updated_on}} </ul>
     </li>
-    {% if user.profile in event.organizer.all %}
-        <a href = "{% url 'localevents:event_update' event.id %}">Edit event</a>
+    {% if event.signups.count >= event.event_capacity %}
+        <p><strong>Event has reached capacity!</strong></p>
     {% else %}
-        {% if signedup %}
-            <p>You have already signed up</p>
-        {% endif %}
-        <form method="post">
+        <form enctype="multipart/form-data" method="post">
             {% csrf_token %}
-            <button type="submit" 
-                {% if event.signups.count >= event.event_capacity or signedup%}disabled{% endif %}>
-                Sign Up
-            </button>
+            {{ signup_form }}
+            <input type="submit" value="Submit">
         </form>
     {% endif %}
 {% endblock %}
-

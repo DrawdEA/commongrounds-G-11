@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Project, Profile, Favorite, ProjectReview, ProjectRating
 from .forms import ProjectForm, ProjectReviewForm, ProjectRatingForm
+from accounts.decorators import role_required
 # Create your views here.
 
 
@@ -93,6 +94,7 @@ def project_detail(request, pk):
 
 
 @login_required
+@role_required('Project Creator')
 def project_add(request):
     # https://docs.djangoproject.com/en/6.0/ref/forms/api/#s-dynamic-initial-values
     creator_profile = Profile.objects.get(user=request.user)
@@ -108,6 +110,7 @@ def project_add(request):
 
 
 @login_required
+@role_required('Project Creator')
 def project_edit(request, pk):
     # https://www.geeksforgeeks.org/python/update-view-function-based-views-django/
     project = Project.objects.get(pk=pk)

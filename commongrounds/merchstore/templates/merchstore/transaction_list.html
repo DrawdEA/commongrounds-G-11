@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Common Grounds | My Orders{% endblock %}
+
+{% block content %}
+<h1>Sales</h1>
+{% for buyer, transactions in grouped %}
+<h2>{{ buyer|default:"Guest" }}</h2>
+<ul>
+    {% for transaction in transactions %}
+    <li>
+        <a href="{% url 'merchstore:product_detail' transaction.product.pk %}">{{ transaction.product.name }}</a>
+        x{{ transaction.amount }} — {{ transaction.status }} — {{ transaction.created_on|date:"M d, Y" }}
+    </li>
+    {% endfor %}
+</ul>
+{% empty %}
+<p>No transactions yet.</p>
+{% endfor %}
+<p><a href="{% url 'merchstore:product_list' %}">Back to store</a></p>
+{% endblock %}
