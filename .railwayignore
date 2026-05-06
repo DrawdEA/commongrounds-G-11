@@ -1,0 +1,8 @@
+myenv/
+.env
+db.sqlite3
+__pycache__/
+*.pyc
+.DS_Store
+commongrounds/media/
+commongrounds/staticfiles/
