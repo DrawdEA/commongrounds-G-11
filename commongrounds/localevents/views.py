@@ -88,6 +88,8 @@ def event_update(request, pk):
         return render(request, 'localevents/event_update.html', ctx)
 
 def event_signup(request, pk):
+    if request.user.is_authenticated:
+        return redirect('localevents:event_detail', pk=pk)
     event = Event.objects.get(pk=pk)
     signup_form = SignupForm(request.POST, request.FILES)
     if signup_form.is_valid() and request.method == 'POST':
