@@ -52,7 +52,9 @@ def project_detail(request, pk):
     project_reviews = ProjectReview.objects.filter(project=project)
     average_rating = get_average_rating(ProjectRating.objects.
                                         filter(project=project))
-    is_favorited = Favorite.objects.filter(project=project,
+    is_favorited = False
+    if request.user.is_authenticated:
+        is_favorited = Favorite.objects.filter(project=project,
                                            profile=request
                                            .user.profile).exists()
 
