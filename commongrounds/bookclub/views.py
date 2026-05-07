@@ -8,8 +8,8 @@ from .forms import BookForm, BookReviewForm, BorrowForm
 
 class ContributorRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        if self.request.user.is_authenticated:
-            return self.request.user.has_perm('bookclub.add_book')
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+            return self.request.user.profile.role == 'contributor'
         return False
 
 
@@ -46,12 +46,10 @@ class BookDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         book = self.get_object()
         
-        # Add the review form and bookmark count to the context
         context['review_form'] = BookReviewForm()
         context['bookmark_count'] = book.bookmarks.count()
         context['reviews'] = book.reviews.all()
         
-        # Check if current user is the contributor to show the Edit link
         context['is_contributor'] = False
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             if book.contributor == self.request.user.profile:
@@ -86,6 +84,9 @@ class BookCreateView(LoginRequiredMixin, ContributorRequiredMixin, CreateView):
     form_class = BookForm
     template_name = 'bookclub/book_form.html'
     success_url = reverse_lazy('bookclub:book_list')
+
+    def get_success_url(self):
+        return reverse_lazy('bookclub:book_detail', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         form.instance.contributor = self.request.user.profile
