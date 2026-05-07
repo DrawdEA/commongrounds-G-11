@@ -23,7 +23,10 @@ def product_list(request):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    is_owner = request.user.is_authenticated and product.owner == request.user.profile
+    is_owner = (
+        request.user.is_authenticated
+        and product.owner == request.user.profile
+    )
 
     # Complete pending guest transaction after login
     if request.user.is_authenticated and not is_owner:
@@ -85,7 +88,10 @@ def product_update(request, pk):
                 updated.status = Product.Status.AVAILABLE
             updated.save()
             return redirect('merchstore:product_detail', pk=pk)
-    return render(request, 'merchstore/product_form.html', {'form': form, 'product': product})
+    return render(request, 'merchstore/product_form.html', {
+        'form': form,
+        'product': product,
+    })
 
 
 @login_required
@@ -99,7 +105,9 @@ def cart_view(request):
         owner = t.product.owner
         grouped.setdefault(owner, []).append(t)
 
-    return render(request, 'merchstore/cart.html', {'grouped': grouped.items()})
+    return render(request, 'merchstore/cart.html', {
+        'grouped': grouped.items(),
+    })
 
 
 @login_required
@@ -113,4 +121,6 @@ def transaction_list(request):
         buyer = t.buyer
         grouped.setdefault(buyer, []).append(t)
 
-    return render(request, 'merchstore/transaction_list.html', {'grouped': grouped.items()})
+    return render(request, 'merchstore/transaction_list.html', {
+        'grouped': grouped.items(),
+    })
