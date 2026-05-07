@@ -59,6 +59,8 @@ def project_detail(request, pk):
     review_form = ProjectReviewForm()
     rating_form = ProjectRatingForm()
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
         profile = request.user.profile
         if 'review_form' in request.POST:
             form = ProjectReviewForm(request.POST, request.FILES)
