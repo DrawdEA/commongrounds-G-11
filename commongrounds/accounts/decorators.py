@@ -14,7 +14,7 @@ def role_required(allowed_role):
         def wrapper(request, *args, **kwargs):
             if not request.user.is_authenticated:
                 from django.shortcuts import redirect
-                return redirect('accounts:login')
+                return redirect('login')
             if request.user.profile.role != allowed_role:
                 return HttpResponseForbidden("You don't have permission to access this page.")
             return view_func(request, *args, **kwargs)
