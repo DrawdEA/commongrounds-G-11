@@ -31,7 +31,6 @@ def event_detail(request, pk):
     if request.user.is_authenticated:
         signed_up = event.signups.filter(user_registrant=request.user.profile).exists()
     if request.method == "POST":
-        print("Post hit")
         if request.user.is_authenticated:
             EventSignup.objects.create(
                 event = event,
@@ -40,8 +39,6 @@ def event_detail(request, pk):
             if event.signups.count() >= event.event_capacity:
                 event.status = 'FULL'
                 event.save()
-            print("Authenticated signup hit")
-            print(event.status)
             return redirect('localevents:event_list')
         else:
             return redirect('localevents:event_signup', pk=pk)
@@ -91,7 +88,8 @@ def event_update(request, pk):
         return render(request, 'localevents/event_update.html', ctx)
 
 def event_signup(request, pk):
-    print("EVENT SIGNUP VIEW HIT")
+    if request.user.is_authenticated:
+        return redirect('localevents:event_detail', pk=pk)
     event = Event.objects.get(pk=pk)
     signup_form = SignupForm(request.POST, request.FILES)
     if signup_form.is_valid() and request.method == 'POST':
@@ -101,8 +99,6 @@ def event_signup(request, pk):
         if event.signups.count() >= event.event_capacity:
             event.status = 'FULL'
             event.save()
-        print("guest hit")
-        print(event.status)
         return redirect('localevents:event_list')
     ctx = {"event": event, "signup_form": signup_form }
     return render(request, 'localevents/event_signup.html', ctx)
