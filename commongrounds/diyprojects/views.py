@@ -44,7 +44,7 @@ def project_list(request):
                       {'project_list': projects})
 
 
-@login_required
+
 def project_detail(request, pk):
     # Handling multiple forms: https://stackoverflow.com/questions/866272
 
