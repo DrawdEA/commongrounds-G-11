@@ -33,7 +33,7 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 # https://stackoverflow.com/questions/39866056/django-admin-login-returns-forbidden-403-csrf-verification-failed-request-abort
-CSRF_TRUSTED_ORIGINS = ['https://commongrounds-g-11-production.up.railway.app/']
+CSRF_TRUSTED_ORIGINS = ['https://commongrounds-g-11-production.up.railway.app']
 
 
 # Application definition
