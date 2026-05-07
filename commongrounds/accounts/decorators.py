@@ -1,7 +1,8 @@
 from functools import wraps
 from django.http import HttpResponseForbidden
 
-# Assisted by Claude, Prompt: "How to create a custom decorator in Django?" 
+
+# Assisted by Claude, Prompt: "How to create a custom decorator in Django?"
 def role_required(allowed_role):
     """
     Use like this
@@ -16,7 +17,8 @@ def role_required(allowed_role):
                 from django.shortcuts import redirect
                 return redirect('login')
             if request.user.profile.role != allowed_role:
-                return HttpResponseForbidden("You don't have permission to access this page.")
+                return HttpResponseForbidden(
+                    "You don't have permission to access this page.")
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator

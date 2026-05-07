@@ -7,6 +7,7 @@ class EventForm(forms.ModelForm):
         model = Event
         exclude = ['organizer']
 
+
 class SignupForm(forms.ModelForm):
     class Meta:
         model = EventSignup

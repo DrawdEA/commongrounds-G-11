@@ -10,6 +10,7 @@ class EventAdmin(admin.ModelAdmin):
 class EventTypeAdmin(admin.ModelAdmin):
     model = EventType
 
+
 class EventSignupAdmin(admin.ModelAdmin):
     model = EventSignup
 

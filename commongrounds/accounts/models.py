@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 class Profile(models.Model):
     ROLES = [("Normal", "Normal"),
@@ -9,7 +10,6 @@ class Profile(models.Model):
              ("Book Contributor", "Book Contributor"),
              ("Project Creator", "Project Creator"),
              ("Commission Maker", "Commission Maker")]
-    
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=63)
     email_address = models.EmailField()

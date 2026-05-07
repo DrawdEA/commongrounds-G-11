@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Commission, Job, JobApplication  
+from .models import Commission, Job, JobApplication
 from .forms import CommissionForm, JobFormSet, JobApplicationForm
 from django.db.models import Case, When, Value, IntegerField
 # Create your views here.
+
 
 def commission_list(request):
     sort_logic = Case(
@@ -20,13 +21,15 @@ def commission_list(request):
 
     created_commissions = []
     applied_commissions = []
-    other_commissions = all_commissions 
+    other_commissions = all_commissions
 
     if request.user.is_authenticated:
         profile = request.user.profile
         created_commissions = all_commissions.filter(maker=profile)
-        applied_commissions = all_commissions.filter(jobs__applications__applicant=profile).distinct()
-        other_commissions = all_commissions.exclude(maker=profile).exclude(jobs__applications__applicant=profile)
+        applied_commissions = all_commissions.filter(
+            jobs__applications__applicant=profile).distinct()
+        other_commissions = all_commissions.exclude(maker=profile).exclude(
+            jobs__applications__applicant=profile)
 
     context = {
         'created_commissions': created_commissions,
@@ -112,7 +115,10 @@ def commission_create(request):
 def commission_update(request, pk):
     commission = get_object_or_404(Commission, pk=pk)
 
-    if request.user.profile.role != "Commission Maker" or request.user.profile != commission.maker:
+    if (
+        request.user.profile.role != "Commission Maker"
+        or request.user.profile != commission.maker
+    ):
         return redirect('commissions:commission_list')
 
     if request.method == "POST":

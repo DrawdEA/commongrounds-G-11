@@ -44,7 +44,6 @@ def project_list(request):
                       {'project_list': projects})
 
 
-
 def project_detail(request, pk):
     # Handling multiple forms: https://stackoverflow.com/questions/866272
 
@@ -117,8 +116,8 @@ def project_edit(request, pk):
 
     if project.creator != request.user.profile:
         return redirect('diyprojects:project_detail', pk=pk)
-    
-    form = ProjectForm(instance=project, initial={'creator': request.user.profile.display_name})
+    form = ProjectForm(instance=project,
+                       initial={'creator': request.user.profile.display_name})
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():

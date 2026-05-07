@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import AccessMixin
 
-# Assisted by Claude, Prompt: "How to create a custom mixin in Django?" 
+
+# Assisted by Claude, Prompt: "How to create a custom mixin in Django?"
 class RoleRequiredMixin(AccessMixin):
     """
     You have to set the allowed_role field in your view
     class MyView(RoleRequiredMixin, ListView):
-        allowed_role = "A role 
+        allowed_role = "A role
         ...
     """
     allowed_role = ''

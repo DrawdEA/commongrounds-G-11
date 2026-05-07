@@ -37,7 +37,10 @@ class Event(models.Model):
         default=0
     )
     status = models.CharField(
-        choices = [('AVAIL', 'Available'), ('FULL', 'Full'), ('DONE', 'Done'), ('CANCEL', 'Cancelled')],
+        choices=[('AVAIL', 'Available'),
+                 ('FULL', 'Full'),
+                 ('DONE', 'Done'),
+                 ('CANCEL', 'Cancelled')],
         null=True
     )
     created_on = models.DateTimeField(auto_now_add=True, null=True)

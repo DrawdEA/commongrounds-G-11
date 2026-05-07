@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Profile
 from .forms import CustomUserCreationForm, ProfileUpdateForm
 
+
 # Create your views here.
 def index(request):
     return HttpResponse("You are at the index of the accounts page.")
@@ -29,7 +30,6 @@ def register(request):
 def profile_update(request, username):
     if request.user.username != username:
         return HttpResponse("Sorry, you can't access this.")
-    
     profile = Profile.objects.get(user=request.user)
     # https://docs.djangoproject.com/en/6.0/topics/forms/modelforms/#overriding-the-default-fields
     form = ProfileUpdateForm(instance=profile)
